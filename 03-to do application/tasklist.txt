@@ -1,0 +1,5 @@
+eat
+run
+play
+sleep
+fun
