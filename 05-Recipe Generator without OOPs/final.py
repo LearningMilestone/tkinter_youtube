@@ -1,5 +1,7 @@
 import random
 import tkinter
+from io import BytesIO
+
 from PIL import Image,ImageTk
 from tkinter import SUNKEN,END,X,messagebox,DISABLED
 from urllib.request import urlopen
@@ -65,24 +67,24 @@ def send_request(ingredient_name):
     global recipe_img
     global recipesource
 
+
     #create request-https://api.edamam.com/api/recipes/v2?type=public&q=avocado&app_id=f14ea768&app_key=41b94c47dc89ddf565cdd201cc5504bc
     #type = public & q = avocado & app_id = f14ea768 & app_key = 41
     # b94c47dc89ddf565cdd201cc5504bc
     queryString={"type":"public","q":ingredient_name,
-                 "app_id":app_id,"app_key":app_key}
+                 "app_id":app_id,"app_key":app_key,"imageSize":"LARGE"}
     response=requests.request("GET",url=url,params=queryString)
     response=response.json()['hits'][random.randint(0,19)]['recipe']
     print(round(response['calories'],2),response['totalTime'])
 
     #send api request and fetch data from the response
     ingredient=ingredient_name
-    recipe_name="Avocado Pizza"
-    calories = 1045
-    prep_time = 10
-    ingredients=["1/2 a large, ripe avocado","The juice of 1/2 a lemon",
-                 "5 tablespoons avocado oil","5 tablespoons avocado oil",
-                 "5 tablespoons avocado oil","Sea salt, black pepper"]
-    recipesource="https://food52.com/recipes/17850-avocado-salad-dressing"
+    recipe_name=response['label']
+    calories = round(response['calories'],2)
+    prep_time = response['totalTime']
+    ingredients=response['ingredientLines']
+    recipesource=response['url']
+    recipe_img=response['images']['SMALL']['url']
     recipewin(ingredient)
 
 
@@ -108,7 +110,10 @@ def recipewin(ingredient_name):
     # output_frame.columnconfigure(1, weight=1)
 
     #link help - https://web.archive.org/web/20201111190625id_/http://effbot.org/pyfaq/why-do-my-tkinter-images-not-appear.htm
-    img=Image.open('bibimbap.png')
+    # img=Image.open('bibimbap.png')
+    #function can be created to read image from url
+    raw_data = urlopen(recipe_img).read()
+    img = Image.open(BytesIO(raw_data))
     img_recipe=ImageTk.PhotoImage(img)
     lbl_imgrec=tkinter.Label(output_frame,image=img_recipe,bg=frame_color)
     lbl_imgrec.image=img_recipe
