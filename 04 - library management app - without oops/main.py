@@ -53,6 +53,7 @@ def export_books():
         writer_csv.writerow(['BookId','Title','Author'])
     #write data back into a csv
         listbox_data=listbox_book.get(0,END)
+        print(listbox_data)
         for element in listbox_data:
             element.rstrip("\n")
             # book_id=element.split('|')[0]
