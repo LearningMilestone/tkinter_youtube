@@ -1,7 +1,6 @@
 import random
 import tkinter
 from io import BytesIO
-
 from PIL import Image,ImageTk
 from tkinter import SUNKEN,END,X,messagebox,DISABLED
 from urllib.request import urlopen
@@ -86,7 +85,6 @@ def send_request(ingredient_name):
     recipesource=response['url']
     recipe_img=response['images']['SMALL']['url']
     recipewin(ingredient)
-
 
 def recipewin(ingredient_name):
 
